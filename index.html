@@ -98,9 +98,8 @@
                         const div = document.createElement('div');
                         div.className = 'movie';
                         div.innerHTML = `<img src="${IMAGE_BASE_URL}${movie.poster_path}" alt="${movie.title}"><p>${movie.title}</p>`;
-                        div.addEventListener('click', () => {
-                            getMovieInfo(movie.id);
-                            getSimilarMovies(movie.id);
+                        div.addEventListener('click', function () {
+                            showMovieDetail(movie.id);
                         });
                         movieDiv.appendChild(div);
                     });
@@ -114,6 +113,9 @@
             }
         }
 
+        function showMovieDetail(id) {
+            window.location.href = `detail.html?id=${id}`;
+        }
 
         getMovies(`https://api.themoviedb.org/3/movie/upcoming?api_key=${API_KEY}&language=en-US&page=1`);
 

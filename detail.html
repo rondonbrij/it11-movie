@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-image: url('https://images.creativemarket.com/0.1.0/ps/1746795/580/386/m2/fpnw/wm0/cosmos_01-copy-.jpg?1476125504&s=e996c56f0d74d6a3e020ebcdd60b6800');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 5px;
+        }
+
+        header h1 {
+            font-size: small;
+        }
+
+        #upper-part {
+            display: flex;
+            height: 50vh;
+            flex-direction: row;
+            padding: 40px;
+        }
+
+        #movie-details {
+            color: white;
+        }
+
+
+        #movie-poster img {
+            margin-right: 20px;
+            height: 50vh;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Movie Detail</h1>
+    </header>
+    <div id="detail-container" class="detail-container">
+        <div id="upper-part">
+            <div id="movie-poster"></div>
+            <div id="movie-details">
+                <div id="movie-detail"></div>
+                <p>Genre: <span id="genre"></span></p>
+                <p>Release Date: <span id="release-date"></span></p>
+                <p>Rating: <span id="rating"></span></p>
+            </div>
+        </div>
+        <div id="lower-part">
+            <h4>Similar Movies:</h4>
+            <div id="similar-movies" class="similar-movie-container"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_KEY = '1bfdbff05c2698dc917dd28c08d41096';
+        const IMAGE_BASE_URL = 'http://image.tmdb.org/t/p/w500/';
+
+        function getMovieDetail(id) {
+            fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}&language=en-US`)
+                .then(response => response.json())
+                .then(data => {
+                    const movieDetailDiv = document.getElementById('movie-detail');
+                    const upperPart = document.getElementById('upper-part');
+                    const posterDiv = document.getElementById('movie-poster');
+
+                    document.getElementById('genre').innerText = getGenres(data.genres);
+                    document.getElementById('release-date').innerText = data.release_date;
+                    document.getElementById('rating').innerText = data.vote_average;
+                    movieDetailDiv.innerHTML = `<h2>${data.title}</h2><p>${data.overview}</p>`;
+
+                    const linearGradient = 'linear-gradient(to right, rgba(31.5, 31.5, 52.5, 1) calc((50vw - 170px) - 340px), rgba(31.5, 31.5, 52.5, 0.84) 50%, rgba(31.5, 31.5, 52.5, 0.84) 100%)';
+                    upperPart.style.background = `${linearGradient}, url('${IMAGE_BASE_URL}${data.poster_path}') center/cover no-repeat`;
+
+                    posterDiv.innerHTML = `<img src="${IMAGE_BASE_URL}${data.poster_path}" alt="${data.title}">`;
+                });
+        }
+
+        function getGenres(genres) {
+            return genres.map(genre => genre.name).join(', ');
+        }
+
+
+
+        function showMovieDetail(id) {
+            window.location.href = `detail.html?id=${id}`;
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const movieId = urlParams.get('id');
+
+        if (movieId) {
+            getMovieDetail(movieId);
+
+            getSimilarMoviesDetail(movieId);
+        } else {
+            window.location.href = 'index.html';
+        }
+
+
+    </script>
+</body>
+
+</html>

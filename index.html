@@ -27,7 +27,7 @@
         }
 
         header:hover {
-            background-color: rgba(51, 51, 51, 0.7);
+            background-color: #000;
         }
 
         #search-container {
@@ -72,13 +72,14 @@
         }
 
         .search-button:hover {
-            background-color: rgba(255, 255, 255, 0.2);
+            background-color: #fff;
+            color: #000;
         }
 
         .movie-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1px;
             justify-content: center;
             margin: 20px;
         }
@@ -113,6 +114,51 @@
             margin-bottom: 10px;
             border-radius: 10px;
         }
+
+        .movie p {
+            margin: 0;
+        }
+
+        footer {
+            background-color: rgba(51, 51, 51, 0.4);
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        footer:hover {
+            background-color: #000;
+        }
+
+        #pagination {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .pagination-button {
+            margin: 0 5px;
+            padding: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+        }
+
+        .pagination-button:hover {
+            background-color: #fff;
+            color: #000;
+        }
+
+        .current-page {
+            background-color: #fff;
+            color: #000;
+        }
     </style>
 </head>
 
@@ -120,22 +166,30 @@
     <header>
         <h1>GAE Movies - Galaxy Art Entertainment</h1>
     </header>
+
     <div id="search-container">
         <input type="text" id="search" placeholder="Search Movies">
         <button class="search-button" onclick="performSearch()">Search</button>
     </div>
+
     <div class="movie-grid" id="movies"></div>
+
+    <div id="pagination"></div>
+
     <div id="movie-info"></div>
 
-
-
+    <footer>
+        <p>Project created by Ronillynuel James Agum for the IT11 Final Drill</p>
+    </footer>
 
     <script>
-        const API_KEY = '6a031d933046eb9bc584af9f6412322c';
+        const API_KEY = '1bfdbff05c2698dc917dd28c08d41096';
         const IMAGE_BASE_URL = 'http://image.tmdb.org/t/p/w500/';
+        let currentPage = 1;
+        let totalPages = 1;
 
-        function getMovies(url) {
-            fetch(url)
+        function getMovies(page) {
+            fetch(`https://api.themoviedb.org/3/movie/upcoming?api_key=${API_KEY}&language=en-US&page=${page}`)
                 .then(response => response.json())
                 .then(data => {
                     const movies = data.results;
@@ -156,7 +210,22 @@
         function performSearch() {
             const searchValue = document.getElementById('search').value;
             if (searchValue) {
-                getMovies(`https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(searchValue)}`);
+                fetch(`https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(searchValue)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const movies = data.results;
+                        const movieDiv = document.getElementById('movies');
+                        movieDiv.innerHTML = '';
+                        movies.forEach(movie => {
+                            const div = document.createElement('div');
+                            div.className = 'movie';
+                            div.innerHTML = `<img src="${IMAGE_BASE_URL}${movie.poster_path}" alt="${movie.title}"><p>${movie.title}</p>`;
+                            div.addEventListener('click', function () {
+                                showMovieDetail(movie.id);
+                            });
+                            movieDiv.appendChild(div);
+                        });
+                    });
             }
         }
 
@@ -164,11 +233,97 @@
             window.location.href = `detail.html?id=${id}`;
         }
 
-        getMovies(`https://api.themoviedb.org/3/movie/upcoming?api_key=${API_KEY}&language=en-US&page=1`);
+        function nextPage() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                updatePagination();
+                getMovies(currentPage);
+            }
+        }
 
+        function previousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                updatePagination();
+                getMovies(currentPage);
+            }
+        }
 
+        function firstPage() {
+            currentPage = 1;
+            updatePagination();
+            getMovies(currentPage);
+        }
 
+        function lastPage() {
+            currentPage = totalPages;
+            updatePagination();
+            getMovies(currentPage);
+        }
 
+        function goToPage(page) {
+            currentPage = page;
+            updatePagination();
+            getMovies(currentPage);
+        }
+
+        function updatePagination() {
+            fetch(`https://api.themoviedb.org/3/movie/upcoming?api_key=${API_KEY}&language=en-US`)
+                .then(response => response.json())
+                .then(data => {
+                    totalPages = data.total_pages;
+                    const paginationDiv = document.getElementById('pagination');
+                    paginationDiv.innerHTML = '';
+
+                    const startPage = Math.max(1, currentPage - 1);
+                    const endPage = Math.min(totalPages, startPage + 2);
+
+                    const startButton = document.createElement('button');
+                    startButton.className = 'pagination-button';
+                    startButton.textContent = 'Start';
+                    startButton.onclick = firstPage;
+                    if (currentPage > 5) {
+                        paginationDiv.appendChild(startButton);
+                    }
+
+                    const backButton = document.createElement('button');
+                    backButton.className = 'pagination-button';
+                    backButton.textContent = 'Back';
+                    backButton.onclick = previousPage;
+                    if (currentPage > 1) {
+                        paginationDiv.appendChild(backButton);
+                    }
+
+                    for (let i = startPage; i <= endPage; i++) {
+                        const button = document.createElement('button');
+                        button.className = `pagination-button ${i === currentPage ? 'current-page' : ''}`;
+                        button.textContent = i;
+                        button.onclick = function () {
+                            goToPage(i);
+                        };
+                        paginationDiv.appendChild(button);
+                    }
+
+                    const nextButton = document.createElement('button');
+                    nextButton.className = 'pagination-button';
+                    nextButton.textContent = 'Next';
+                    nextButton.onclick = nextPage;
+                    if (currentPage < totalPages) {
+                        paginationDiv.appendChild(nextButton);
+                    }
+
+                    const lastButton = document.createElement('button');
+                    lastButton.className = 'pagination-button';
+                    lastButton.textContent = 'Last';
+                    lastButton.onclick = lastPage;
+                    if (currentPage < totalPages - 3) {
+                        paginationDiv.appendChild(lastButton);
+                    }
+                });
+        }
+
+        updatePagination();
+        getMovies(currentPage);
     </script>
 
 </body>

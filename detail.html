@@ -45,6 +45,50 @@
             margin-right: 20px;
             height: 50vh;
         }
+
+        #lower-part {
+            height: 30vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #lower-part h4 {
+            color: white;
+            margin: 0;
+            padding: 10px;
+            background-color: #333;
+        }
+
+        #similar-movies {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            padding: 10px;
+        }
+
+        .movie {
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            width: 10%;
+            margin: 5px;
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .movie img {
+            width: 100%;
+            max-height: calc(30vh - 40px);
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .movie p {
+            margin: 10px 0;
+        }
     </style>
 </head>
 
@@ -92,11 +136,30 @@
                 });
         }
 
+
+
+
+
         function getGenres(genres) {
             return genres.map(genre => genre.name).join(', ');
         }
 
-
+        function getSimilarMoviesDetail(id) {
+            fetch(`https://api.themoviedb.org/3/movie/${id}/similar?api_key=${API_KEY}&language=en-US&page=1`)
+                .then(response => response.json())
+                .then(data => {
+                    const similarMoviesDiv = document.getElementById('similar-movies');
+                    data.results.forEach(movie => {
+                        const movieDiv = document.createElement('div');
+                        movieDiv.className = 'movie';
+                        movieDiv.innerHTML = `<img src="${IMAGE_BASE_URL}${movie.poster_path}" alt="${movie.title}"><p>${movie.title}</p>`;
+                        movieDiv.addEventListener('click', () => {
+                            showMovieDetail(movie.id);
+                        });
+                        similarMoviesDiv.appendChild(movieDiv);
+                    });
+                });
+        }
 
         function showMovieDetail(id) {
             window.location.href = `detail.html?id=${id}`;
@@ -112,7 +175,6 @@
         } else {
             window.location.href = 'index.html';
         }
-
 
     </script>
 </body>

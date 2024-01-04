@@ -19,7 +19,7 @@
         }
 
         header {
-            background-color: rgba(51, 51, 51, 0.9);
+            background-color: rgba(51, 51, 51, 0.4);
             color: #fff;
             text-align: center;
             padding: 10px;
@@ -44,35 +44,35 @@
             backdrop-filter: blur(2px);
             -webkit-backdrop-filter: blur(2px);
             border: 1px solid rgba(255, 255, 255, 0.18);
-            color: #000;
-            transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out, opacity 0.3s ease-in-out, color 0.3s ease-in-out;
+            color: #ffffff;
+            transition: background-color 0.3s ease-in-out, opacity 0.3s ease-in-out, color 0.3s ease-in-out;
         }
 
         #search::placeholder {
-            color: rgba(0, 0, 0, 0.7);
-            /* Placeholder text color set to black with opacity */
+            color: rgba(255, 255, 255, 0.7);
         }
 
         #search:hover {
-            transform: scale(1.05);
             background-color: rgba(255, 255, 255, 0.2);
             opacity: 1;
             color: #000;
-            /* Text color set to black */
         }
 
         .search-button {
             padding: 12px;
-            background-color: rgba(51, 51, 51, 0.9);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: #ffffff;
-            border: none;
             border-radius: 0px 200px 200px 0px;
             cursor: pointer;
             transition: background-color 0.3s ease-in-out;
         }
 
         .search-button:hover {
-            background-color: #333;
+            background-color: rgba(255, 255, 255, 0.2);
         }
 
         .movie-grid {

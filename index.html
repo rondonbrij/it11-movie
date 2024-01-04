@@ -16,6 +16,9 @@
             background-position: center;
             background-repeat: no-repeat;
             background-attachment: fixed;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         header {
@@ -33,6 +36,14 @@
         #search-container {
             text-align: center;
             padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: row;
+            /* Changed from column to row */
+            align-items: center;
+            /* Added align-items for vertical centering */
+            justify-content: center;
+            /* Added justify-content for horizontal centering */
         }
 
         #search {
@@ -82,6 +93,7 @@
             gap: 1px;
             justify-content: center;
             margin: 20px;
+            flex-grow: 1;
         }
 
         .movie {
@@ -125,6 +137,7 @@
             text-align: center;
             padding: 10px;
             transition: background-color 0.3s ease-in-out;
+            margin-top: auto;
         }
 
         footer:hover {
@@ -162,6 +175,7 @@
     </style>
 </head>
 
+
 <body>
     <header>
         <h1>GAE Movies - Galaxy Art Entertainment</h1>
@@ -187,9 +201,17 @@
         const IMAGE_BASE_URL = 'http://image.tmdb.org/t/p/w500/';
         let currentPage = 1;
         let totalPages = 1;
+        let currentSearchTerm = '';
 
         function getMovies(page) {
-            fetch(`https://api.themoviedb.org/3/movie/upcoming?api_key=${API_KEY}&language=en-US&page=${page}`)
+            let url;
+            if (currentSearchTerm) {
+                url = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(currentSearchTerm)}&page=${page}`;
+            } else {
+                url = `https://api.themoviedb.org/3/movie/upcoming?api_key=${API_KEY}&language=en-US&page=${page}`;
+            }
+
+            fetch(url)
                 .then(response => response.json())
                 .then(data => {
                     const movies = data.results;
@@ -204,28 +226,14 @@
                         });
                         movieDiv.appendChild(div);
                     });
+                    updatePagination();
                 });
         }
 
         function performSearch() {
-            const searchValue = document.getElementById('search').value;
-            if (searchValue) {
-                fetch(`https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(searchValue)}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        const movies = data.results;
-                        const movieDiv = document.getElementById('movies');
-                        movieDiv.innerHTML = '';
-                        movies.forEach(movie => {
-                            const div = document.createElement('div');
-                            div.className = 'movie';
-                            div.innerHTML = `<img src="${IMAGE_BASE_URL}${movie.poster_path}" alt="${movie.title}"><p>${movie.title}</p>`;
-                            div.addEventListener('click', function () {
-                                showMovieDetail(movie.id);
-                            });
-                            movieDiv.appendChild(div);
-                        });
-                    });
+            currentSearchTerm = document.getElementById('search').value;
+            if (currentSearchTerm) {
+                getMovies(1);
             }
         }
 
@@ -268,7 +276,14 @@
         }
 
         function updatePagination() {
-            fetch(`https://api.themoviedb.org/3/movie/upcoming?api_key=${API_KEY}&language=en-US`)
+            let url;
+            if (currentSearchTerm) {
+                url = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(currentSearchTerm)}`;
+            } else {
+                url = `https://api.themoviedb.org/3/movie/upcoming?api_key=${API_KEY}&language=en-US`;
+            }
+
+            fetch(url)
                 .then(response => response.json())
                 .then(data => {
                     totalPages = data.total_pages;
@@ -325,7 +340,6 @@
         updatePagination();
         getMovies(currentPage);
     </script>
-
 </body>
 
 </html>

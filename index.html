@@ -211,7 +211,6 @@
         let currentPage = 1;
         let totalPages = 1;
         let currentSearchTerm = '';
-
         function getMovies(page) {
             let url;
             if (currentSearchTerm) {
@@ -229,7 +228,11 @@
                     movies.forEach(movie => {
                         const div = document.createElement('div');
                         div.className = 'movie';
-                        div.innerHTML = `<img src="${IMAGE_BASE_URL}${movie.poster_path}" alt="${movie.title}"><p>${movie.title}</p>`;
+
+                        const posterPath = movie.poster_path ? `${IMAGE_BASE_URL}${movie.poster_path}` : 'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg';
+
+                        div.innerHTML = `<img src="${posterPath}" alt="${movie.title}"><p>${movie.title}</p>`;
+
                         div.addEventListener('click', function () {
                             showMovieDetail(movie.id);
                         });

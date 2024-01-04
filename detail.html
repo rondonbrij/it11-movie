@@ -105,24 +105,30 @@
         }
 
         #similar-movies {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: flex-start;
-            padding: 10px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1px;
+            justify-content: center;
+            margin: 20px;
+            flex-grow: 1;
         }
 
         .movie {
-            color: #fff;
+            color: white;
             background: rgba(255, 255, 255, 0.1);
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
             backdrop-filter: blur(2px);
             -webkit-backdrop-filter: blur(2px);
+            border-radius: 10px;
             border: 1px solid rgba(255, 255, 255, 0.18);
-            width: 10%;
-            margin: 5px;
-            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             padding: 10px;
-            border-radius: 8px;
+            box-sizing: border-box;
+            cursor: pointer;
+            margin: 10px;
+            text-align: center;
             transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
         }
 
@@ -185,7 +191,9 @@
                     document.getElementById('rating').innerText = data.vote_average;
                     movieDetailDiv.innerHTML = `<h2>${data.title}</h2><p>${data.overview}</p>`;
 
-                    posterDiv.innerHTML = `<img src="${IMAGE_BASE_URL}${data.poster_path}" alt="${data.title}">`;
+                    const posterPath = data.poster_path ? `${IMAGE_BASE_URL}${data.poster_path}` : 'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg';
+
+                    posterDiv.innerHTML = `<img src="${posterPath}" alt="${data.title}">`;
                 });
         }
 
@@ -201,7 +209,10 @@
                     data.results.forEach(movie => {
                         const movieDiv = document.createElement('div');
                         movieDiv.className = 'movie';
-                        movieDiv.innerHTML = `<img src="${IMAGE_BASE_URL}${movie.poster_path}" alt="${movie.title}"><p>${movie.title}</p>`;
+
+                        const posterPath = movie.poster_path ? `${IMAGE_BASE_URL}${movie.poster_path}` : 'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg';
+
+                        movieDiv.innerHTML = `<img src="${posterPath}" alt="${movie.title}"><p>${movie.title}</p>`;
                         movieDiv.addEventListener('click', () => {
                             showMovieDetail(movie.id);
                         });

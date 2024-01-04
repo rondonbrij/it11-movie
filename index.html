@@ -39,11 +39,8 @@
             flex-grow: 1;
             display: flex;
             flex-direction: row;
-            /* Changed from column to row */
             align-items: center;
-            /* Added align-items for vertical centering */
             justify-content: center;
-            /* Added justify-content for horizontal centering */
         }
 
         #search {
@@ -172,19 +169,30 @@
             background-color: #fff;
             color: #000;
         }
+
+        #results-message {
+            font-weight: bold;
+            color: white;
+            margin-left: 40px;
+            margin-bottom: 0;
+        }
     </style>
 </head>
 
 
 <body>
-    <header>
+    <header onclick="goToHomePage()">
         <h1>GAE Movies - Galaxy Art Entertainment</h1>
     </header>
 
     <div id="search-container">
+
         <input type="text" id="search" placeholder="Search Movies">
         <button class="search-button" onclick="performSearch()">Search</button>
+
     </div>
+    <p id="results-message">Results: <span id="results-count">0</span></p>
+
 
     <div class="movie-grid" id="movies"></div>
 
@@ -232,9 +240,19 @@
 
         function performSearch() {
             currentSearchTerm = document.getElementById('search').value;
+            const resultsMessage = document.getElementById('results-message');
+
             if (currentSearchTerm) {
                 getMovies(1);
+                resultsMessage.style.display = 'block';
+            } else {
+                resultsMessage.style.display = 'none';
+                getMovies(currentPage);
             }
+        }
+
+        function goToHomePage() {
+            window.location.href = 'index.html';
         }
 
         function showMovieDetail(id) {
@@ -334,8 +352,18 @@
                     if (currentPage < totalPages - 3) {
                         paginationDiv.appendChild(lastButton);
                     }
+
+                    const resultsMessage = document.getElementById('results-message');
+                    const resultsCount = document.getElementById('results-count');
+                    if (currentSearchTerm) {
+                        resultsCount.textContent = data.total_results;
+                        resultsMessage.style.display = 'block';
+                    } else {
+                        resultsMessage.style.display = 'none';
+                    }
                 });
         }
+
 
         updatePagination();
         getMovies(currentPage);

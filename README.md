@@ -6,7 +6,7 @@ This web application allows users to search for movies, view upcoming movies, an
 
 The purpose of this project is to create an interactive and responsive movie searcher web application using the The Movie Database (TMDb) API. The application aims to showcase upcoming movies, allow users to search for specific movies, and provide comprehensive details about each movie. This web application was developed by [Ronillynuel James Agum](https://www.facebook.com/ronxxxron) for the IT11 Final Project.
 
-You can watch the video explanation [here](https://drive.google.com/drive/folders/161r7m-EzRazKlGDKx-w8cPuAU24BYviD?usp=drive_link). Should the video be unavailable or non-existent, please reach out to the developer.
+You can watch the video explanation [here](https://drive.google.com/file/d/1l0tvT75UUQil3wMbzTz_Jf7zeWNOSb81/view?usp=sharing). Should the video be unavailable or non-existent, please reach out to the developer.
 
 <strong>Features</strong>
 

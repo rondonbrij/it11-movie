@@ -30,7 +30,7 @@ Back button functionality to return to the previous page.
 To setup this in your pc follow the instructions below:
 Setup
 1. Clone the repository:
-  git clone https://github.com/yourusername/movies-search-web-app.git
+  git clone https://github.com/rondonbrij/it11-movie
 2. Open the project in your preferred code editor.
 3. Replace <API_KEY> in the script with your TMDb API key.
 4. Open the index.html file in a web browser to start using the application.
